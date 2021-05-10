@@ -1,8 +1,8 @@
 const models = require('../../models');
 
 exports.get_products = ( _ , res) => {
-   models.Products.findAll().then( (productList) => {
-       res.render('admin/products.html', {products : productList});
+   models.Products.findAll().then( (products) => {
+       res.render('admin/products.html', {products : products});
    });
 }
 
@@ -23,4 +23,11 @@ exports.post_products_write = ( req , res ) => {
     // models.Products.create(req.body).then( () => {
     //     res.redirect('/admin/products');
     // });
+}
+
+exports.get_products_detail = (req, res) => {
+    
+    models.Products.findByPk(req.params.id).then( (product) => {
+        res.render('admin/detail.html', { product });
+    })
 }
