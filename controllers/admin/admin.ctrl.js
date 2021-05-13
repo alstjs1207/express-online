@@ -1,3 +1,4 @@
+const { get } = require('.');
 const models = require('../../models');
 
 exports.get_products = ( _ , res) => {
@@ -33,9 +34,53 @@ exports.get_products_detail = (req, res) => {
 }
 
 exports.get_products_edit = (req, res) => {
-    models.Products.findByPk(req.params.id).then( (product) => {
+    
+    
+    const findByPk = new Promise(( resolve, reject ) => {
+        product = models.Products.findByPk(req.params.id);
+        if (product) {
+            resolve(product);
+        }
+        else {
+            reject("err");
+        }
+    });
+
+    const time = new Promise( (resolve, reject) => {
+        setTimeout( () => {
+            resolve({ time: "okkkkkk"});
+        }, 3000)
+    });
+
+
+    //Promise.all로 구현
+    // 실행순서가 정해지지 않음
+    Promise.all( [findByPk, time] ).then ( (result) => {
+        var product = result[0];
         res.render('admin/write.html', { product });
-    })
+        console.log(result[1].time);
+    }).catch( (err) => {
+
+    });
+
+    //or
+    // promise
+    // findByPk.then((product) => {
+    //     res.render('admin/write.html', { product });
+    //     return time;
+    // })
+    // .then( (getTime) => {
+    //     console.log("getTime ==",getTime.time);
+    // })
+    // .catch ((err) => {
+    //     console.log(err);
+    // });
+
+    //or
+    //default
+    // models.Products.findByPk(req.params.id).then( (product) => {
+    //     res.render('admin/write.html', { product });
+    // })
 }
 
 exports.post_products_edit = ( req , res ) => {
